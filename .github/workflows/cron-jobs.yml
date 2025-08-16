@@ -1,7 +1,7 @@
 name: ETL Pipeline
 
 description: This is a pipeline ETL project for COVID-19 data.
-version: 1.0.0
+
 
 on:
   push:
