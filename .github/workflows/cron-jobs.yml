@@ -1,43 +1,57 @@
-name : Pipline ETL
-description : This is a pipeline ETL project for COVID-19 data.
-version : 1.0.0
-authors :
-  - name : AUVIGHA Tech
-    email :
+name: ETL Pipeline
 
-  
-on push:
-  branches:
-    - main
-  paths:
-    - .gitignore
-    - readme.md
-    - .env
-    - requirements.txt
-    - .vscode/
-    - venv/
-    - .yml
+description: This is a pipeline ETL project for COVID-19 data.
+version: 1.0.0
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .gitignore
+      - README.md
+      - .env
+      - requirements.txt
+      - .vscode/**
+      - venv/**
+      - '**/*.yml'
+
   schedule:
-    - cron: '0 12 * * *' 
-    - cron: '0 0 * * *'   
-      timezone: 'UTC'
+    - cron: '0 12 * * *'   # Every day at 12:00 UTC
+    - cron: '0 0 * * *'    # Every day at 00:00 UTC
 
 jobs:
-  - name: Run ETL Pipeline
-    script: python etl_pipeline.py
-    # environment:
-    #   DB_HOST: ${{ secrets.DB_HOST }}
-    #   DB_USER: ${{ secrets.DB_USER }}
-    #   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-    #   API_KEY: ${{ secrets.API_KEY }}
-    #   API_SECRET: ${{ secrets.API_SECRET }}
-  - steps:
-    - name: Install Dependencies
-      run: pip install -r requirements.txt
-    - name: Run Tests
-      run: pytest tests/
-    - name: Deploy
-      run: echo "Deploying to production server"
-      # Add deployment commands here
-    - name: Notify
-      run: echo "Pipeline completed successfully"
+  run-etl:
+    name: Run ETL Pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'  
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run ETL Script
+        run: python etl_pipeline.py
+        # env:
+        #   DB_HOST: ${{ secrets.DB_HOST }}
+        #   DB_USER: ${{ secrets.DB_USER }}
+        #   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        #   API_KEY: ${{ secrets.API_KEY }}
+        #   API_SECRET: ${{ secrets.API_SECRET }}
+
+      - name: Run Tests
+        run: pytest tests/
+
+      - name: Deploy
+        run: echo "Deploying to production server"
+        # Add deployment commands here
+
+      - name: Notify
+        run: echo "Pipeline completed successfully"
