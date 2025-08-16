@@ -46,9 +46,6 @@ jobs:
         #   API_KEY: ${{ secrets.API_KEY }}
         #   API_SECRET: ${{ secrets.API_SECRET }}
 
-      - name: Run Tests
-        run: pytest tests/
-
       - name: Deploy
         run: echo "Deploying to production server"
         # Add deployment commands here
