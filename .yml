@@ -1,0 +1,43 @@
+name : Pipline ETL
+description : This is a pipeline ETL project for COVID-19 data.
+version : 1.0.0
+authors :
+  - name : AUVIGHA Tech
+    email :
+
+  
+on push:
+  branches:
+    - main
+  paths:
+    - .gitignore
+    - readme.md
+    - .env
+    - requirements.txt
+    - .vscode/
+    - venv/
+    - .yml
+  schedule:
+    - cron: '0 12 * * *' 
+    - cron: '0 0 * * *'   
+      timezone: 'UTC'
+
+jobs:
+  - name: Run ETL Pipeline
+    script: python etl_pipeline.py
+    # environment:
+    #   DB_HOST: ${{ secrets.DB_HOST }}
+    #   DB_USER: ${{ secrets.DB_USER }}
+    #   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+    #   API_KEY: ${{ secrets.API_KEY }}
+    #   API_SECRET: ${{ secrets.API_SECRET }}
+  - steps:
+    - name: Install Dependencies
+      run: pip install -r requirements.txt
+    - name: Run Tests
+      run: pytest tests/
+    - name: Deploy
+      run: echo "Deploying to production server"
+      # Add deployment commands here
+    - name: Notify
+      run: echo "Pipeline completed successfully"
